@@ -34,6 +34,12 @@ class Jeu():
             print(repr(d), end="")
         
     def afficher_main(self, joueur):
+        """
+        Affiche la main du joueur spécifié.
+        :param joueur: (int), le joueur dont on veut afficher la main
+        :cu: joueur doit être 0 ou 1
+        """
+        assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
         print(f"\n\n======Main du Joueur {joueur + 1}======\n")
         start_index = 0
         template = "[{i}] {domino}"
@@ -70,7 +76,10 @@ class Jeu():
     def peut_poser(self, domino):
         """
         Vérifie si un domino peut être posé sur le plateau actuel.
+        :param domino: (Domino), le domino à vérifier
+        :return: (bool), True si le domino peut être posé, False sinon.
         """
+        assert isinstance(domino, Domino), "L'objet doit être un domino"
         if not self.plateau:
             return True
         gauche_plateau = self.plateau[0].gauche
@@ -86,8 +95,13 @@ class Jeu():
 
     def poser_domino(self, joueur, domino_index):
         """
-        Permet au joueur de poser un domino sur le plateau.
+        Permet au joueur de poser un domino sur le plateau en verifiant ou il peut le poser.
+        :param joueur: (int), le joueur qui pose le domino
+        :param domino_index: (int), l'indice du domino dans la main du joueur
+        :cu: joueur doit être 0 ou 1 et l'indice doit être valide
         """
+        assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
+        assert isinstance(domino_index, int), "L'indice du domino doit être un entier"
         if domino_index < 0 or domino_index >= len(self.joueurs[joueur]):
             print("Indice invalide.")
             return
@@ -130,7 +144,12 @@ class Jeu():
     def piocher(self, joueur):
         """
         Permet au joueur de piocher un domino dans la pioche.
+        :param joueur: (int), le joueur qui pioche
+        :cu: joueur doit être 0 ou 1
         """
+        assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
+        for d in self.pioche:
+            assert isinstance(d, Domino), "La pioche doit contenir des dominos"
         if self.pioche:
             domino_pioche = self.pioche.pop()
             self.joueurs[joueur].append(domino_pioche)
@@ -143,7 +162,12 @@ class Jeu():
     def tour_joueur(self, joueur):
         """
         Gère le déroulement complet du tour d’un joueur.
+        :param joueur: (int), le joueur dont c'est le tour
+        :cu: joueur doit être 0 ou 1
         """
+        assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
+        for d in self.joueurs[joueur]:
+            assert isinstance(d, Domino), "La main du joueur doit contenir des dominos"
         while True:
             action = input("Que voulez-vous faire ? (poser un domino: entrer l'indice, piocher: 'p') : ")
             if action.lower() == 'p':
