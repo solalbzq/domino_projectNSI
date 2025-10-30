@@ -3,6 +3,7 @@ import random
 
 class Jeu():
     def __init__(self):
+        """Initialise un jeu de dominos avec deux joueurs, une pioche et un plateau de jeu."""
         self.dominos = self.generer_jeu()
         random.shuffle(self.dominos)
         self.pioche = []
@@ -179,4 +180,3 @@ class Jeu():
                     break
                 else:
                     print("Vous ne pouvez pas poser ce domino. Choisissez une autre action.")
-                

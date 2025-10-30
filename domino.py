@@ -1,9 +1,6 @@
 class Domino:
-    """
-    Classe représentant une pièce de domino composée de deux valeurs entières
-    """
 
-    def __init__(self, gauche,droite):
+    def __init__(self, gauche, droite):
         """
         Initialise un domino avec les valeurs gauche et droite.
         :param gauche: (int), valeur du coté gauche du domino
@@ -20,41 +17,62 @@ class Domino:
         """
         Inverse les deux côtés du domino
         """
-        self.gauche, self.droite = self.droite, self.gauche
+        self.gauche = self.droite
+        self.droite = self.gauche
 
     def cote_est_vide(self, cote):
         """
         Vérifie si un côté du domino est vide (0).
         :param cote: (int) valeur d'un coté du dommino
-        :return:(int) renvoie soit 0 soit la valeur du coté du domino
+        :cu: le côté doit être un entier entre 0 et 6
+        :return:(int) renvoie soit une string vide pour l'affichage soit la valeur du coté du domino
         """
         assert isinstance(cote, int), "Le côté doit être un entier"
         assert 0 <= cote <= 6, "Le côté doit être entre 0 et 6"
+        
         if cote == 0:
-            return " "
+            res = " "
         else:
-            return cote
+            res = cote    
+        return res
+
+    def valeur_totale(self):
+        """
+        Retourne la somme des deux côtés du domino.
+        :return: (int), La somme des deux coté du domino.
+        """
+        return self.gauche + self.droite
+    
+    def est_double(self):
+        """
+        Retourne True si le domino est un double.
+        :return: (bool), Le domino est un double ou non.
+        """
+        return self.gauche == self.droite
 
     def __str__(self):
         """
-        Retourne une représentation du domino.
-        :return: représentation graphique/ textuelle du domino .
+        Retourne une représentation du domino comme demandander dans le cahier des charges.
+        :return: représentation graphique textuelle du domino.
         """
+        
         if self.est_double():
             valeur = self.cote_est_vide(self.gauche)
             haut = f"|{valeur}|"
             bas = f"|{valeur}|"
             bordure = "-" * len(haut)
-            return f"{bordure}\n{haut}\n{bordure}\n{bas}\n{bordure}"
+            res = f"{bordure}\n{haut}\n{bordure}\n{bas}\n{bordure}"
         else:
             valeur = f"| {self.cote_est_vide(self.gauche)} | {self.cote_est_vide(self.droite)} |"
             bordure = "-" * len(valeur)
-            return f"{bordure}\n{valeur}\n{bordure}"
+            res = f"{bordure}\n{valeur}\n{bordure}"
+        
+        return res
     
     def __repr__(self):
         """
         Retourne une représentation du domino compacte par soucis d'affichage.
-        :return: (str), représentation graphique/ textuelle retournée
+        :return: (str), représentation textuelle compacte du domino.
         """
         return f"[{self.gauche}|{self.droite}]"
 
@@ -65,20 +83,4 @@ class Domino:
         :return: (bool), compare les deux dominos différents.
         """
         assert isinstance(autre, Domino), "La comparaison doit se faire avec un autre domino"
-        if not isinstance(autre, Domino):
-            return NotImplemented
-        return ({self.gauche, self.droite} == {autre.gauche, autre.droite})
-
-    def est_double(self):
-        """
-        Retourne True si le domino est un double (ex: [3|3]).
-        :return: (bool), Le domino est un double ou non.
-        """
-        return self.gauche == self.droite
-
-    def valeur_totale(self):
-        """
-        Retourne la somme des deux côtés du domino.
-        :return: (int), La somme des deux coté du domino.
-        """
-        return self.gauche + self.droite
+        return self.valeur_totale() == autre.valeur_totale()
