@@ -28,7 +28,7 @@ class Domino:
             return cote
 
     def __str__(self):
-        """Retourne une représentation du domino."""
+        """Retourne une représentation du domino complète comme sur l'affichage."""
         if self.est_double():
             valeur = self.cote_est_vide(self.gauche)
             haut = f"|{valeur}|"
@@ -41,17 +41,8 @@ class Domino:
             return f"{bordure}\n{valeur}\n{bordure}"
     
     def __repr__(self):
-        """Retourne une représentation du domino."""
-        if self.est_double():
-            valeur = self.cote_est_vide(self.gauche)
-            haut = f"|{valeur}|"
-            bas = f"|{valeur}|"
-            bordure = "-" * len(haut)
-            return f"{bordure}\n{haut}\n{bordure}\n{bas}\n{bordure}"
-        else:
-            valeur = f"| {self.cote_est_vide(self.gauche)} | {self.cote_est_vide(self.droite)} |"
-            bordure = "-" * len(valeur)
-            return f"{bordure}\n{valeur}\n{bordure}"
+        """Retourne une représentation du domino compacte par soucis d'affichage."""
+        return f"[{self.gauche}|{self.droite}]"
 
     def __eq__(self, autre):
         """
