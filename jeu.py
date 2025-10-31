@@ -98,12 +98,10 @@ class Jeu():
             self.afficher_main(joueur_actuel)
             self.tour_joueur(joueur_actuel)
 
-            # On vérifie si le joueur actuel a gagné après son tour
             if self.verifier_victoire(joueur_actuel):
                 print(f"\n🎉 Joueur {joueur_actuel + 1} a gagné la partie ! 🎉")
                 break
 
-            # Changement de joueur
             joueur_actuel = 1 - joueur_actuel
             print("\n" + "#" * 50 + "\n")
 
@@ -111,7 +109,6 @@ class Jeu():
     def verifier_victoire(self, numero_joueur):
         """
         Vérifie si le joueur spécifié a gagné la partie.
-
         :param numero_joueur: (int) Numéro du joueur (0 ou 1)
         :return: (bool) True si le joueur n’a plus de dominos, sinon False
         """
@@ -139,6 +136,9 @@ class Jeu():
     def poser_domino(self, joueur, domino_index):
         """
         Permet au joueur de poser un domino sur le plateau en vérifiant où il peut le poser.
+        :param joueur: (int), le joueur qui pose le domino
+        :param domino_index: (int), l'indice du domino dans la main du joueur
+        :cu: joueur doit être 0 ou 1, domino_index doit être un entier valide
         """
         assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
         assert isinstance(domino_index, int), "L'indice du domino doit être un entier"
@@ -214,10 +214,13 @@ class Jeu():
             assert isinstance(d, Domino), "La main du joueur doit contenir des dominos"
             
         while True:
-            action = input("Que voulez-vous faire ? (poser un domino: entrer l'indice, piocher: 'p') : ")
+            action = input("Que voulez-vous faire ? (poser un domino: entrer l'indice, piocher: 'p', passer: 's') : ")
             
             if action.lower() == 'p':
                 self.piocher(joueur)
+                break
+            elif action.lower() == 's':
+                print("Vous passez votre tour.")
                 break
             else:
                 if self.peut_poser(self.joueurs[joueur][int(action)]):
