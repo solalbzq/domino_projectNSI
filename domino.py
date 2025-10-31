@@ -1,3 +1,4 @@
+# %%
 class Domino:
 
     def __init__(self, gauche, droite):
@@ -17,8 +18,9 @@ class Domino:
         """
         Inverse les deux côtés du domino
         """
+        tmp = self.gauche
         self.gauche = self.droite
-        self.droite = self.gauche
+        self.droite = tmp
 
     def cote_est_vide(self, cote):
         """
