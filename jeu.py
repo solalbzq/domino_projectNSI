@@ -7,11 +7,63 @@ class Jeu():
         """
         Initialise un jeu de dominos avec deux joueurs, une pioche et un plateau de jeu.
         """
-        self.dominos = self.generer_jeu()
-        random.shuffle(self.dominos)
-        self.pioche = []
-        self.joueurs = [[], []] 
-        self.plateau = []
+        self.set_dominos(self.generer_jeu())
+        random.shuffle(self.get_dominos())
+        self.set_pioche([])
+        self.set_joueurs([[], []]) 
+        self.set_plateau([])
+
+    def set_dominos(self, nouveaux_dominos):
+        """
+        :param nouveaux_dominos: (list), une liste de dominos pour le jeu
+        """
+        assert isinstance(nouveaux_dominos, list), "dominos doit être une liste"
+        self.dominos = nouveaux_dominos
+
+    def get_dominos(self):
+        """
+        :return: (list), la liste des dominos du jeu
+        """
+        return self.dominos
+
+    def set_pioche(self, nouvelle_pioche):
+        """
+        :param nouvelle_pioche: (list), une liste de dominos pour la pioche
+        """
+        assert isinstance(nouvelle_pioche, list), "pioche doit être une liste"
+        self.pioche = nouvelle_pioche
+
+    def get_pioche(self):
+        """
+        :return: (list), la liste des dominos dans la pioche
+        """
+        return self.pioche
+
+    def set_joueurs(self, nouveaux_joueurs):
+        """
+        :param nouveaux_joueurs: (list), une liste contenant les mains des joueurs
+        """
+        assert isinstance(nouveaux_joueurs, list), "joueurs doit être une liste"
+        self.joueurs = nouveaux_joueurs
+
+    def get_joueurs(self):
+        """
+        :return: (list), la liste des mains des joueurs
+        """
+        return self.joueurs
+
+    def set_plateau(self, nouveau_plateau):
+        """
+        ":param nouveau_plateau: (list), une liste de dominos pour le plateau de jeu
+        """
+        assert isinstance(nouveau_plateau, list), "plateau doit être une liste"
+        self.plateau = nouveau_plateau
+
+    def get_plateau(self):
+        """
+        :return: (list), la liste des dominos sur le plateau de jeu
+        """
+        return self.plateau
 
     def generer_jeu(self):
         """
@@ -25,23 +77,27 @@ class Jeu():
         distribue 7 dominos à chaque joueur et place le reste dans la pioche. 
         (pas besoin de boucle ici car le nombre de joueurs est fixe à 2 et le paquet est dêja melangé)
         """
-        self.joueurs[0] = self.dominos[:7]
-        self.joueurs[1] = self.dominos[7:14]
-        self.pioche = self.dominos[14:]
+        dominos = self.get_dominos()
+        joueurs = [[], []]
+        joueurs[0] = dominos[:7]
+        joueurs[1] = dominos[7:14]
+        self.set_joueurs(joueurs)
+        self.set_pioche(dominos[14:])
         
     def afficher_plateau(self):
         """
         Affiche le plateau de jeu de manière lisible.
         """
+        plateau = self.get_plateau()
         print("Plateau :", end=" ")
 
-        if not self.plateau:
+        if not plateau:
             print("(vide)")
             return
 
         indice = 0
-        while indice < len(self.plateau):
-            domino_courant = self.plateau[indice]
+        while indice < len(plateau):
+            domino_courant = plateau[indice]
             print(repr(domino_courant), end="")
             indice += 1
         
@@ -55,7 +111,8 @@ class Jeu():
 
         print(f"\n\n====== Main du Joueur {joueur + 1} ======\n")
 
-        main_du_joueur = self.joueurs[joueur]
+        joueurs = self.get_joueurs()
+        main_du_joueur = joueurs[joueur]
         if not main_du_joueur:
             print("(Aucun domino dans la main)\n")
             return
@@ -89,8 +146,12 @@ class Jeu():
         self.distribuer()
         joueur_actuel = 0
 
-        premier_domino = self.pioche.pop()
-        self.plateau.append(premier_domino)
+        pioche = self.get_pioche()
+        premier_domino = pioche.pop()
+        self.set_pioche(pioche)
+        plateau = self.get_plateau()
+        plateau.append(premier_domino)
+        self.set_plateau(plateau)
         print(f"Le jeu commence avec le domino suivant : {repr(premier_domino)}\n")
 
         while True:
@@ -112,7 +173,8 @@ class Jeu():
         :param numero_joueur: (int) Numéro du joueur (0 ou 1)
         :return: (bool) True si le joueur n’a plus de dominos, sinon False
         """
-        main_joueur = self.joueurs[numero_joueur]
+        joueurs = self.get_joueurs()
+        main_joueur = joueurs[numero_joueur]
         return len(main_joueur) == 0
                 
                 
@@ -124,11 +186,12 @@ class Jeu():
         """
         assert isinstance(domino, Domino), "L'objet doit être un domino"
         
-        if not self.plateau:
+        plateau = self.get_plateau()
+        if not plateau:
             return True
         
-        gauche_plateau = self.plateau[0].gauche
-        droite_plateau = self.plateau[-1].droite
+        gauche_plateau = plateau[0].gauche
+        droite_plateau = plateau[-1].droite
         
         return domino.gauche == gauche_plateau or domino.droite == gauche_plateau or domino.gauche == droite_plateau or domino.droite == droite_plateau
 
@@ -143,20 +206,24 @@ class Jeu():
         assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
         assert isinstance(domino_index, int), "L'indice du domino doit être un entier"
 
-        if domino_index < 0 or domino_index >= len(self.joueurs[joueur]):
+        joueurs = self.get_joueurs()
+        if domino_index < 0 or domino_index >= len(joueurs[joueur]):
             print("Indice invalide.")
             return
 
-        domino_choisi = self.joueurs[joueur][domino_index]
+        domino_choisi = joueurs[joueur][domino_index]
 
-        if not self.plateau:
-            self.plateau.append(domino_choisi)
-            self.joueurs[joueur].pop(domino_index)
+        plateau = self.get_plateau()
+        if not plateau:
+            plateau.append(domino_choisi)
+            self.set_plateau(plateau)
+            joueurs[joueur].pop(domino_index)
+            self.set_joueurs(joueurs)
             print(f"Domino {domino_choisi} posé sur le plateau.")
             return
 
-        gauche_plateau = self.plateau[0].gauche
-        droite_plateau = self.plateau[-1].droite
+        gauche_plateau = plateau[0].gauche
+        droite_plateau = plateau[-1].droite
 
         peut_gauche = domino_choisi.gauche == gauche_plateau or domino_choisi.droite == gauche_plateau
         peut_droite = domino_choisi.gauche == droite_plateau or domino_choisi.droite == droite_plateau
@@ -165,25 +232,27 @@ class Jeu():
             print("Ce domino ne peut être joué qu’à gauche")
             if domino_choisi.droite != gauche_plateau:
                 domino_choisi.retourner()
-            self.plateau.insert(0, domino_choisi)
+            plateau.insert(0, domino_choisi)
 
         elif peut_droite and not peut_gauche:
             print("Ce domino ne peut être joué qu’à droite")
             if domino_choisi.gauche != droite_plateau:
                 domino_choisi.retourner()
-            self.plateau.append(domino_choisi)
+            plateau.append(domino_choisi)
 
         elif peut_gauche and peut_droite:
             print("Ce domino peut être joué des deux côtés, on le place à droite par défaut.")
             if domino_choisi.gauche != droite_plateau:
                 domino_choisi.retourner()
-            self.plateau.append(domino_choisi)
+            plateau.append(domino_choisi)
 
         else:
             print("Impossible de poser ce domino sur le plateau.")
             return
 
-        self.joueurs[joueur].pop(domino_index)
+        self.set_plateau(plateau)
+        joueurs[joueur].pop(domino_index)
+        self.set_joueurs(joueurs)
 
     def piocher(self, joueur):
         """
@@ -192,12 +261,16 @@ class Jeu():
         :cu: joueur doit être 0 ou 1
         """
         assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
-        for d in self.pioche:
+        pioche = self.get_pioche()
+        for d in pioche:
             assert isinstance(d, Domino), "La pioche doit contenir des dominos"
             
-        if self.pioche:
-            domino_pioche = self.pioche.pop()
-            self.joueurs[joueur].append(domino_pioche)
+        if pioche:
+            domino_pioche = pioche.pop()
+            self.set_pioche(pioche)
+            joueurs = self.get_joueurs()
+            joueurs[joueur].append(domino_pioche)
+            self.set_joueurs(joueurs)
             print(f"Vous avez pioché le domino : {repr(domino_pioche)}")
         else:
             print("La pioche est vide, vous ne pouvez plus piocher.")
@@ -210,7 +283,8 @@ class Jeu():
         :cu: joueur doit être 0 ou 1
         """
         assert joueur in (0, 1), "Le joueur doit être 0 ou 1"
-        for d in self.joueurs[joueur]:
+        joueurs = self.get_joueurs()
+        for d in joueurs[joueur]:
             assert isinstance(d, Domino), "La main du joueur doit contenir des dominos"
             
         while True:
@@ -223,7 +297,7 @@ class Jeu():
                 print("Vous passez votre tour.")
                 break
             else:
-                if self.peut_poser(self.joueurs[joueur][int(action)]):
+                if self.peut_poser(joueurs[joueur][int(action)]):
                     self.poser_domino(joueur, int(action))
                     break
                 else:
