@@ -297,8 +297,15 @@ class Jeu():
                 print("Vous passez votre tour.")
                 break
             else:
-                if self.peut_poser(joueurs[joueur][int(action)]):
-                    self.poser_domino(joueur, int(action))
-                    break
+                if action.isdigit():
+                    indice_domino = int(action)
+                    if 0 <= indice_domino < len(joueurs[joueur]):
+                        if self.peut_poser(joueurs[joueur][indice_domino]):
+                            self.poser_domino(joueur, indice_domino)
+                            break
+                        else:
+                            print("Vous ne pouvez pas poser ce domino. Choisissez une autre action.")
+                    else:
+                        print("Entrée invalide. Veuillez entrer un indice de domino, 'p' pour piocher ou 's' pour passer.")
                 else:
-                    print("Vous ne pouvez pas poser ce domino. Choisissez une autre action.")
+                    print("Entrée invalide. Veuillez entrer un indice de domino, 'p' pour piocher ou 's' pour passer.")
