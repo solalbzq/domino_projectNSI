@@ -1,4 +1,3 @@
-# %%
 class Domino:
 
     def __init__(self, gauche, droite):
